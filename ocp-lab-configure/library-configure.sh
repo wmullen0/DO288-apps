@@ -75,7 +75,7 @@ function lab_config {
   # Jim decided we should not validate the OpenShift version
   # local ocp_version="${RHT_OCP4_CLUSTER_VERSION:-4.0.0-0.X}"
 
-  save_variable master_api 'API Endpoint'
+#  save_variable master_api 'API Endpoint'
 
   ### Initialize reasonable defaults for most variables
 
