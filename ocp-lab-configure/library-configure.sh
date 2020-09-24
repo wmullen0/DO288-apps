@@ -441,42 +441,59 @@ function readline {
 
 
 function save_config {
-  if ! sudo touch "${RHT_OCP4_CONFIG}"
-  then
-    fatal 99 "Cannot save your lab configuration."
-  fi
+  # substituting RHT_OCP4_CONFIG value with Katacoda values
+#  if ! sudo touch "${RHT_OCP4_CONFIG}"
+#  then
+#    fatal 99 "Cannot save your lab configuration."
+#  fi
 
   sudo bash -c "cat <<EOF > ${RHT_OCP4_CONFIG}
 RHT_OCP4_MASTER_API=${master_api}
 RHT_OCP4_WILDCARD_DOMAIN=${wildcard_domain}
 EOF"
 
-  if [ "${RHT_OCP4_MODE}" = "development" ]
+#Must add the nexus server to the RHT_OCP4_CONFIG once the value is available
+#RHT_OCP4_NEXUS_SERVER=${nexus_server}
+  if [ -z "$master_api" ]
   then
-
-    sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
-RHT_OCP4_NEXUS_SERVER=${nexus_server}
-RHT_OCP4_DEV_USER=${dev_user}
-RHT_OCP4_DEV_PASSWORD=${dev_passwd}
-RHT_OCP4_GITHUB_USER=${github_user}
-RHT_OCP4_QUAY_USER=${quay_user}
-EOFDEV"
-
-  elif [ "${RHT_OCP4_MODE}" = "administration" ]
-  then
-
-    sudo bash -c "cat <<EOFADM >> ${RHT_OCP4_CONFIG}
-RHT_OCP4_SERVICES_VM=${services_vm}
-RHT_OCP4_PRIV_REGISTRY=${priv_registry}
-RHT_OCP4_BASTION_HOST=${bastion_host}
-RHT_OCP4_KUBEAUTH_SRC=${kube_auth_src}
-RHT_OCP4_KUBEAUTH_LAB=${kube_auth_lab}
-RHT_OCP4_KUBEAUTH_USER=${kube_auth_user}
-RHT_OCP4_ADMIN_USER=${admin_user}
-RHT_OCP4_ADMIN_PASSWORD=${admin_passwd}
-EOFADM"
-
+      fatal 1 "Master API is not valid"
+  else
+      echo "\$master_api is NOT empty"
+          sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
+        RHT_OCP4_DEV_USER=${"admin"}
+        RHT_OCP4_DEV_PASSWORD=${"developer"}
+        RHT_OCP4_GITHUB_USER=${"wmullen0"}
+        RHT_OCP4_QUAY_USER=${"wmullen0"}
+        EOFDEV"
   fi
+
+#removing RHT_OCP4_Mode
+#  if [ "${RHT_OCP4_MODE}" = "development" ]
+#  then
+#
+#    sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
+#RHT_OCP4_NEXUS_SERVER=${nexus_server}
+#RHT_OCP4_DEV_USER=${dev_user}
+#RHT_OCP4_DEV_PASSWORD=${dev_passwd}
+#RHT_OCP4_GITHUB_USER=${github_user}
+#RHT_OCP4_QUAY_USER=${quay_user}
+#EOFDEV"
+#
+#  elif [ "${RHT_OCP4_MODE}" = "administration" ]
+#  then
+#
+#    sudo bash -c "cat <<EOFADM >> ${RHT_OCP4_CONFIG}
+#RHT_OCP4_SERVICES_VM=${services_vm}
+#RHT_OCP4_PRIV_REGISTRY=${priv_registry}
+#RHT_OCP4_BASTION_HOST=${bastion_host}
+#RHT_OCP4_KUBEAUTH_SRC=${kube_auth_src}
+#RHT_OCP4_KUBEAUTH_LAB=${kube_auth_lab}
+#RHT_OCP4_KUBEAUTH_USER=${kube_auth_user}
+#RHT_OCP4_ADMIN_USER=${admin_user}
+#RHT_OCP4_ADMIN_PASSWORD=${admin_passwd}
+#EOFADM"
+#
+#  fi
 }
 
 
