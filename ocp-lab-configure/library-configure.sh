@@ -9,7 +9,7 @@
 #   - Remove cluster id variable. Not used
 #   - Match up key names exactly with the ones in the course
 #   - Remove prompts for inferred values
-#   - Save config values inmediately after they are read, so that students do not need to retype everything.
+#   - Save config values immediately after they are read, so that students do not need to retype everything.
 #   - Add message showing the config file path
 #   * Wed May 31 Fernando Lozano <flozano@redhat.com>
 #   - Add validation for GitHub account name
@@ -49,23 +49,28 @@ TIMEOUT=6
 function lab_config {
 
   # IMPORTANT: Keep this in sync with the course .shlib
-  export RHT_OCP4_CONFIG=/usr/local/etc/ocp4.config
-  export RHT_OCP4_DEFAULTS=/usr/local/etc/ocp4.defaults
+  #export RHT_OCP4_CONFIG=/usr/local/etc/ocp4.config
+  #export RHT_OCP4_DEFAULTS=/usr/local/etc/ocp4.defaults
 
-  source ${RHT_OCP4_DEFAULTS} &>/dev/null
-  if [ "$1" != "-d" ]; then
-    source ${RHT_OCP4_CONFIG} &>/dev/null
-  fi
+  #source ${RHT_OCP4_DEFAULTS} &>/dev/null
+  #if [ "$1" != "-d" ]; then
+  #  source ${RHT_OCP4_CONFIG} &>/dev/null
+  #fi
 
-  if [ "${RHT_OCP4_MODE}" != "development" -a "${RHT_OCP4_MODE}" != "administration" ]
-  then
-    fatal 88 "Invalid value for RHT_OCP4_MODE: '${RHT_OCP4_MODE}'"
-  fi
+#  if [ "${RHT_OCP4_MODE}" != "development" -a "${RHT_OCP4_MODE}" != "administration" ]
+#  then
+#    fatal 88 "Invalid value for RHT_OCP4_MODE: '${RHT_OCP4_MODE}'"
+#  fi
 
   ### Start taking input from students
 
   # There are two levels of defaults: from the ocp4.defaults file and hard-coded here.
-  local master_api="${RHT_OCP4_MASTER_API}"
+  # comment out to hardcode the master api for the katacoda environment
+  # local master_api="${RHT_OCP4_MASTER_API}"
+  local master_api=https://openshift:6443
+  # get the api_host name in katacoda with oc get svc and locate the external ip
+  local api_hostname=kubernetes.default.svc.cluster.local
+
 
   # Jim decided we should not validate the OpenShift version
   # local ocp_version="${RHT_OCP4_CLUSTER_VERSION:-4.0.0-0.X}"
@@ -75,8 +80,8 @@ function lab_config {
   ### Initialize reasonable defaults for most variables
 
   # Derive default values for wildcard domain from the master api URL
-  local api_hostname=$( echo "${master_api}" | sed -e 's/[^/]*\/\/\([^@]*@\)\?\([^:/]*\).*/\2/' )
-  local api_domain=$( echo "${api_hostname}" | sed -e 's/[^.]*\.//' )
+  local api_hostname=$( echo "${master_api}" )
+  local api_domain=$( echo "${api_hostname}" )
   local wildcard_domain="apps.${api_domain}"
 
   # These variables are used only by development courses
@@ -115,22 +120,22 @@ function lab_config {
 
   # readline ocp_version 'OpenShift version'
 
-  if [ "${RHT_OCP4_MODE}" = "development" ]
-  then
-    save_variable dev_user 'Username'
-    save_variable dev_passwd 'Password'
-    save_variable github_user 'GitHub Account Name'
-    save_variable quay_user 'Quay.io Account Name'
-
-  elif [ "${RHT_OCP4_MODE}" = "administration" ]
-  then
-    save_variable services_vm 'Services VM'
-    save_variable priv_registry 'Private Registry'
-    save_variable bastion_host 'Bastion Host'
-    save_variable kube_auth_src 'Kubeadmin Auth Folder or Zip'
-    save_variable admin_user 'Cluster Administrator User name'
-    save_variable admin_passwd 'Cluster Administrator User Password'
-  fi
+#  if [ "${RHT_OCP4_MODE}" = "development" ]
+#  then
+#    save_variable dev_user 'Username'
+#    save_variable dev_passwd 'Password'
+#    save_variable github_user 'GitHub Account Name'
+#    save_variable quay_user 'Quay.io Account Name'
+#
+#  elif [ "${RHT_OCP4_MODE}" = "administration" ]
+#  then
+#    save_variable services_vm 'Services VM'
+#    save_variable priv_registry 'Private Registry'
+#    save_variable bastion_host 'Bastion Host'
+#    save_variable kube_auth_src 'Kubeadmin Auth Folder or Zip'
+#    save_variable admin_user 'Cluster Administrator User name'
+#    save_variable admin_passwd 'Cluster Administrator User Password'
+#  fi
 
   ### Display data provided by the student
 
@@ -138,22 +143,22 @@ function lab_config {
   echo 'You entered:'
   echo -e " · API Endpoint:\t\t\t${master_api}"
 
-  if [ "${RHT_OCP4_MODE}" = "development" ]
-  then
-    echo -e " · Username:\t\t\t\t${dev_user}"
-    echo -e " · Password:\t\t\t\t${dev_passwd}"
-    echo -e " · GitHub Account Name:\t\t\t${github_user}"
-    echo -e " · Quay.io Account Name:\t\t${quay_user}"
-
-  elif [ "${RHT_OCP4_MODE}" = "administration" ]
-  then
-    echo -e " · Services VM:\t\t\t\t${services_vm}"
-    echo -e " · Private Registry:\t\t\t${priv_registry}"
-    echo -e " · Bastion Host:\t\t\t${bastion_host}"
-    echo -e " · Kubeadmin Auth Folder or Zip:\t${kube_auth_src}"
-    echo -e " · Cluster Administrator User Name:\t${admin_user}"
-    echo -e " · Cluster Administrator User Password:\t${admin_passwd}"
-  fi
+#  if [ "${RHT_OCP4_MODE}" = "development" ]
+#  then
+#    echo -e " · Username:\t\t\t\t${dev_user}"
+#    echo -e " · Password:\t\t\t\t${dev_passwd}"
+#    echo -e " · GitHub Account Name:\t\t\t${github_user}"
+#    echo -e " · Quay.io Account Name:\t\t${quay_user}"
+#
+#  elif [ "${RHT_OCP4_MODE}" = "administration" ]
+#  then
+#    echo -e " · Services VM:\t\t\t\t${services_vm}"
+#    echo -e " · Private Registry:\t\t\t${priv_registry}"
+#    echo -e " · Bastion Host:\t\t\t${bastion_host}"
+#    echo -e " · Kubeadmin Auth Folder or Zip:\t${kube_auth_src}"
+#    echo -e " · Cluster Administrator User Name:\t${admin_user}"
+#    echo -e " · Cluster Administrator User Password:\t${admin_passwd}"
+#  fi
 
   ### Display generated config
 
@@ -162,23 +167,23 @@ function lab_config {
   echo -e " · API Endpoint:\t\t\t${master_api}"
   echo -e " · Wildcard Domain:\t\t\t${wildcard_domain}"
 
-  if [ "${RHT_OCP4_MODE}" = "development" ]
-  then
-    echo -e " · Nexus Server Host:\t\t\t${nexus_server}"
-    echo -e " · Username:\t\t\t\t${dev_user}"
-    echo -e " · Password:\t\t\t\t${dev_passwd}"
-    echo -e " · GitHub Account Name:\t\t\t${github_user}"
-    echo -e " · Quay.io Account Name:\t\t${quay_user}"
-
-  elif [ "${RHT_OCP4_MODE}" = "administration" ]
-  then
-    echo -e " · Services VM:\t\t\t\t${services_vm}"
-    echo -e " · Private Registry:\t\t\t${priv_registry}"
-    echo -e " · Bastion Host:\t\t\t${bastion_host}"
-    echo -e " · Kubeadmin Auth Folder or Zip:\t${kube_auth_src}"
-    echo -e " · Cluster Administrator User Name:\t${admin_user}"
-    echo -e " · Cluster Administrator User Password:\t${admin_passwd}"
-  fi
+#  if [ "${RHT_OCP4_MODE}" = "development" ]
+#  then
+#    echo -e " · Nexus Server Host:\t\t\t${nexus_server}"
+#    echo -e " · Username:\t\t\t\t${dev_user}"
+#    echo -e " · Password:\t\t\t\t${dev_passwd}"
+#    echo -e " · GitHub Account Name:\t\t\t${github_user}"
+#    echo -e " · Quay.io Account Name:\t\t${quay_user}"
+#
+#  elif [ "${RHT_OCP4_MODE}" = "administration" ]
+#  then
+#    echo -e " · Services VM:\t\t\t\t${services_vm}"
+#    echo -e " · Private Registry:\t\t\t${priv_registry}"
+#    echo -e " · Bastion Host:\t\t\t${bastion_host}"
+#    echo -e " · Kubeadmin Auth Folder or Zip:\t${kube_auth_src}"
+#    echo -e " · Cluster Administrator User Name:\t${admin_user}"
+#    echo -e " · Cluster Administrator User Password:\t${admin_passwd}"
+#  fi
 
   ### Verifying data from students
 
@@ -343,7 +348,7 @@ function lab_config {
     echo 'Saving your Maven settings file...'
 
     local maven_settings='/home/student/.m2/settings.xml'
-    if !( cp -f "${maven_settings}.orig" "${maven_settings}" \
+    if ! ( cp -f "${maven_settings}.orig" "${maven_settings}" \
        && sed -i "s/nexus-common.apps.cluster.domain.example.com/${nexus_server}/" "${maven_settings}" )
     then
       fatal 99 "Cannot save your Maven settings file."
@@ -382,7 +387,7 @@ function lab_config {
 
 
 function error {
-  echo -e "\e[91m$@\e[0m" 1>&2
+  echo -e "\e[91m$\e[0m" 1>&2
 }
 
 
