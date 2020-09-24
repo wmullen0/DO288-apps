@@ -342,7 +342,9 @@ function lab_config {
   echo
   echo 'Saving your lab configuration file...'
 
-  save_config
+ # create a save_config file to try to resolve touch: cannot touch '': No such file or directory for the save config
+ touch save_config.txt
+ save_config
 
   if [ "${RHT_OCP4_MODE}" = "development" ]
   then
