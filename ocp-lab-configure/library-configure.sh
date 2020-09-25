@@ -447,7 +447,7 @@ function save_config {
 #    fatal 99 "Cannot save your lab configuration."
 #  fi
 
-  sudo bash -c "cat <<EOF > ${RHT_OCP4_CONFIG}
+  sudo bash -c "cat <<EOF>> ${RHT_OCP4_CONFIG}
 RHT_OCP4_MASTER_API=${master_api}
 RHT_OCP4_WILDCARD_DOMAIN=${wildcard_domain}
 EOF"
@@ -464,6 +464,7 @@ EOF"
           RHT_OCP4_DEV_PASSWORD='developer'
           RHT_OCP4_GITHUB_USER='wmullen0'
           RHT_OCP4_QUAY_USER='wmullen0'
+          EOFDEV"
           EOFDEV"
   fi
 
