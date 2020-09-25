@@ -447,7 +447,7 @@ function save_config {
 #    fatal 99 "Cannot save your lab configuration."
 #  fi
 
-  sudo bash -c "cat <<EOF>> ${RHT_OCP4_CONFIG}
+sudo bash -c "cat <<EOF>> ${RHT_OCP4_CONFIG}
 RHT_OCP4_MASTER_API=${master_api}
 RHT_OCP4_WILDCARD_DOMAIN=${wildcard_domain}
 EOF"
@@ -459,60 +459,20 @@ EOF"
       fatal 1 "Master API is not valid"
   else
       echo "\$master_api is NOT empty"
-          sudo bash -c "cat <<EOFDEV>> ${RHT_OCP4_CONFIG}
+          sudo bash -c "cat <<EOFDEV>>" ${RHT_OCP4_CONFIG}
           RHT_OCP4_DEV_USER='admin'
           RHT_OCP4_DEV_PASSWORD='developer'
           RHT_OCP4_GITHUB_USER='wmullen0'
           RHT_OCP4_QUAY_USER='wmullen0'
-          EOFDEV"
-          EOFDEV"
   fi
-
-#removing RHT_OCP4_Mode
-#  if [ "${RHT_OCP4_MODE}" = "development" ]
-#  then
-#
-#    sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
-#RHT_OCP4_NEXUS_SERVER=${nexus_server}
-#RHT_OCP4_DEV_USER=${dev_user}
-#RHT_OCP4_DEV_PASSWORD=${dev_passwd}
-#RHT_OCP4_GITHUB_USER=${github_user}
-#RHT_OCP4_QUAY_USER=${quay_user}
-#EOFDEV"
-#
-#  elif [ "${RHT_OCP4_MODE}" = "administration" ]
-#  then
-#
-#    sudo bash -c "cat <<EOFADM >> ${RHT_OCP4_CONFIG}
-#RHT_OCP4_SERVICES_VM=${services_vm}
-#RHT_OCP4_PRIV_REGISTRY=${priv_registry}
-#RHT_OCP4_BASTION_HOST=${bastion_host}
-#RHT_OCP4_KUBEAUTH_SRC=${kube_auth_src}
-#RHT_OCP4_KUBEAUTH_LAB=${kube_auth_lab}
-#RHT_OCP4_KUBEAUTH_USER=${kube_auth_user}
-#RHT_OCP4_ADMIN_USER=${admin_user}
-#RHT_OCP4_ADMIN_PASSWORD=${admin_passwd}
-#EOFADM"
-#
-#  fi
 }
 
 
 if ! which oc &>/dev/null
 then
-  fatal 1 "Cannot find the 'oc' command in your PATH"
+  fatal 1 'Cannot find the oc command in your PATH'
 fi
 
 echo
 echo 'This script configures the connection parameters to access the OpenShift cluster for your lab scripts'
 echo
-
-if [ "$1" != "-d" -a "$1" != "" ]; then
-  echo "Usage: $( basename $0 ) [-h|-d]"
-  echo
-  echo -e "  -h: displays this help message"
-  echo -e "  -d: start from defaults instead of starting from last saved config"
-  echo
-else
-  lab_config "$@"
-fi
