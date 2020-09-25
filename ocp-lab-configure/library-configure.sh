@@ -459,7 +459,7 @@ EOF"
       fatal 1 "Master API is not valid"
   else
       echo "\$master_api is NOT empty"
-          sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
+          sudo bash -c "cat <<EOFDEV>> ${RHT_OCP4_CONFIG}
           RHT_OCP4_DEV_USER='admin'
           RHT_OCP4_DEV_PASSWORD='developer'
           RHT_OCP4_GITHUB_USER='wmullen0'
