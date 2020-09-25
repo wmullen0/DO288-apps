@@ -460,11 +460,11 @@ EOF"
   else
       echo "\$master_api is NOT empty"
           sudo bash -c "cat <<EOFDEV >> ${RHT_OCP4_CONFIG}
-        RHT_OCP4_DEV_USER="admin"
-        RHT_OCP4_DEV_PASSWORD="developer"
-        RHT_OCP4_GITHUB_USER="wmullen0"
-        RHT_OCP4_QUAY_USER="wmullen0"
-        EOFDEV"
+          RHT_OCP4_DEV_USER='admin'
+          RHT_OCP4_DEV_PASSWORD='developer'
+          RHT_OCP4_GITHUB_USER='wmullen0'
+          RHT_OCP4_QUAY_USER='wmullen0'
+          EOFDEV"
   fi
 
 #removing RHT_OCP4_Mode
